@@ -1,9 +1,4 @@
-/*
- * MSP432.c
- *
- *  Created on: Jul 4, 2024
- *      Author: jchav
- */
+
 #include "MSP432.h"
 #include <msp.h>
 #include "RSLK_Pins.h"
