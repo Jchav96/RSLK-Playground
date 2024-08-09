@@ -1,4 +1,3 @@
-
 #include "MSP432.h"
 #include <msp.h>
 #include "RSLK_Pins.h"
