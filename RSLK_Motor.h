@@ -1,9 +1,3 @@
-/*
- * RSLK_Motor.h
- *
- *  Created on: Jul 4, 2024
- *      Author: jchav
- */
 #include "msp.h"
 #include "RSLK_Pins.h"
 #ifndef RSLK_MOTOR_H_
