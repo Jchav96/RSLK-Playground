@@ -19,9 +19,4 @@ bool redLED();
 void ledWrite(char color, bool state);
 void setupClock(uint16_t freq);
 void delay(uint32_t milliseconds);
-//void initializeUART(uint32_t baudRate);
-void initializeUART();
-void uartWrite(char data);
-void uartPrint(char *message);
-
 #endif /* MSP432_H_ */
