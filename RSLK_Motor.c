@@ -53,7 +53,6 @@ void setRightMotorDirection(char direction){
 }
 
 void setBothMotorsDirection(char direction){
-    //leftMotorDirectionPort->OUT |= 0;
     if(direction == 'F'){
         leftMotorDirectionPort->OUT &= (leftMotorDirectionPin && rightMotorDirectionPin); // set the direction pins to High to move forward
     }
