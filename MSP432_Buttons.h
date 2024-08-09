@@ -1,10 +1,3 @@
-/*
- * MSP432_Buttons.h
- *
- *  Created on: Jul 20, 2024
- *      Author: jchav
- */
-
 #ifndef MSP432_BUTTONS_H_
 #define MSP432_BUTTONS_H_
 #include <stdbool.h>
