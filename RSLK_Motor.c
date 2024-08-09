@@ -1,9 +1,3 @@
-/*
- * Motor.c
- *
- *  Created on: Jul 4, 2024
- *      Author: jchav
- */
 #include "RSLK_MOTOR.h"
 #include "RSLK_Pins.h"
 #include<msp.h>
