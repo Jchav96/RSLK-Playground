@@ -1,10 +1,3 @@
-/*
- * RSLK_Pins.h
- *
- *  Created on: Jul 6, 2024
- *      Author: jchav
- */
-
 #ifndef RSLK_PINS_H_
 #define RSLK_PINS_H_
 #include <msp432p401r.h>
