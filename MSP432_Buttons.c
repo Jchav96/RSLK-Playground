@@ -1,9 +1,3 @@
-/*
- * MSP432_Buttons.c
- *
- *  Created on: Jul 20, 2024
- *      Author: jchav
- */
 #include<MSP432_Buttons.h>
 #include "RSLK_Pins.h"
 #include <stdbool.h>
