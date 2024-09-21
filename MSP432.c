@@ -138,10 +138,7 @@ void uartWrite(char *message){
    for(i = 0 ; message[i] != '\0'; i++){
        while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG)); // wait until is ready to transmit
        EUSCI_A0->TXBUF = message[i]; // send character through buffer
-   }
-   // Send newline and carriage return
-   //while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG));
-   //EUSCI_A0->TXBUF = '\n';
+   }  
    while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG));
    EUSCI_A0->TXBUF = '\r';
 }
