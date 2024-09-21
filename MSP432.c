@@ -3,6 +3,8 @@
 #include "RSLK_Pins.h"
 #include <stdbool.h>
 static uint32_t global_freq; // global variable to store clock frequency
+bool clockSet = 0;
+#define CYCLES_PER_MS 3000 // 3 MHz clock = 3000 cycles per millisecond
 void setupTimerA(Timer_A_Type *timerA, uint16_t period,uint16_t ccr1, uint16_t ccr2){
     // setting the period for timer A
     timerA->CCR[0] = period;
@@ -21,7 +23,8 @@ void setupTimerA(Timer_A_Type *timerA, uint16_t period,uint16_t ccr1, uint16_t c
 }
 
 void setupClock(uint16_t freq){
-    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
+    clockSet = 1;
+    //WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
     // Unlock the clock signal module for register access
     CS->KEY = CS_KEY_VAL;
     if(freq <= 1500000){
@@ -52,10 +55,17 @@ void setupClock(uint16_t freq){
 }
 
 void delay(uint32_t milliseconds){
-    uint16_t cycles = (global_freq/1000)*milliseconds;
-    while(cycles > 0){
-        __delay_cycles(1);
-        cycles--;
+    if(clockSet == 1){
+        uint16_t cycles = (global_freq/1000)*milliseconds;
+        while(cycles > 0){
+            __delay_cycles(1);
+            cycles--;
+        }
+    }
+    else{
+        while(milliseconds--){
+            __delay_cycles(3000);
+        }
     }
 }
 
@@ -86,6 +96,7 @@ bool redLED(){
 
 void ledSetupGPIO(){
      RED_LED_PORT ->DIR |= RED_LED_Pin; // Set the RED LED Pin as an output (P1.0)
+     RED_LED_PORT->OUT &= ~RED_LED_Pin; // have the RED LED OFF by default
      // Set the variable LED (RGB) port and its respective pins as outputs
      LED_Port ->DIR |= (Off|   Red  |   Green   |   Blue) ;
      // Clear all onboard LED's
@@ -102,4 +113,36 @@ void ledSetupGPIO(){
      //LED_Port ->OUT &= ~(Red   |   Green   |   Blue);
 }
 
+/* Have the clock set to the default frequency for the UART to work properly
+   At a baud Rate of 9600 
+ */
+void initializeUART(){
+    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
+    // Enable the selection 0 for the uartPort
+    uartPort->SEL0 |= (uartReceivePin | uartTransmitPin);
+    // Disable the selection 1 for the uartPort
+    uartPort->SEL1 &= ~(uartReceivePin | uartTransmitPin);
+    // Writing to the appropriate registers to enable UART...
+    // Enabling the software reset of the UART peripheral
+    EUSCI_A0->CTLW0 |= EUSCI_A_CTLW0_SWRST;
+    // set the clock source to SMCLK and disable parity
+    EUSCI_A0->CTLW0 |= EUSCI_A_CTLW0_SSEL__SMCLK;
+    EUSCI_A0->BRW = 19;                                                  // Baudrate width, SMClo/16/DR -> 3000000/16/9600 = 19.53125
+    EUSCI_A0->MCTLW = (9 << EUSCI_A_MCTLW_BRF_OFS | EUSCI_A_MCTLW_OS16); // 19.53125 - 19 = 0.53125 * 16 = 8.5, round up to 9
+    // Release software reset to initialize the UART
+    EUSCI_A0->CTLW0 &= ~EUSCI_A_CTLW0_SWRST;
+}
+
+void uartWrite(char *message){
+   int i;
+   for(i = 0 ; message[i] != '\0'; i++){
+       while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG)); // wait until is ready to transmit
+       EUSCI_A0->TXBUF = message[i]; // send character through buffer
+   }
+   // Send newline and carriage return
+   //while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG));
+   //EUSCI_A0->TXBUF = '\n';
+   while (!(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG));
+   EUSCI_A0->TXBUF = '\r';
+}
 
