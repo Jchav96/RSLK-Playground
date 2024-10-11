@@ -67,9 +67,6 @@ void startI2C(){
     // Set the I2C in transmit mode
     EUSCI_B0->CTLW0 |= UCTR;  // Set UCTR
     EUSCI_B0->CTLW0 |= UCTXSTT;  // Set UCTXSTT
-    // Expected value: CTLW0 should be (previous value) | 0x0002 (UCTXSTT set).
-    uint16_t expectedValueAfterUctxsttSet = (EUSCI_B0->CTLW0) | 0x0002;  // Calculate the expected value after setting UCTXSTT
-    uint16_t actualValueForUctxstt = EUSCI_B0->CTLW0 & UCTXSTT;  // Get the actual value for UCTXSTT
     uartWrite("Starting I2C...  \n");
     uartWrite("Press S1 to continue \n");
     while(!s1.pressed()){}
