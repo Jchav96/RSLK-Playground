@@ -116,13 +116,9 @@ int initializeLCD(){
     uartWrite("Writing backlight state \n");
     lcdExpanderWrite(backlightVal);
     uartWrite("Backlight state written \n");
-    // Set the LCD into 4 bit mode (requires writing 0x03 command 3 times)
     uartWrite("setting the LCD into 4 bit mode \n");
-    int i;
-    for(i = 0; i <3; i++){
-        lcdWrite4Bits(0x03 << 4);
-        delay(5);
-    }
+    lcdWrite4Bits(0x03 << 4);
+    delay(5);
     uartWrite("LCD set into 4 bit mode \n");
     // Set the 4 bit interface by sending 0x02
     uartWrite("setting the 4 bit interface \n");
